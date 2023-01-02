@@ -1,0 +1,7 @@
+{
+  "JWTName": "testCookieName",
+  "content": {
+    "cookieName": "testContent"
+  },
+  "expirationInMinutes": 1000
+}

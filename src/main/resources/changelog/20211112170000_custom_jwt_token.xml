@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd">
+
+    <changeSet id="20211112170000" author="Joonas Roosalu">
+        <createTable schemaName="jwt_blacklist" tableName="custom_jwt_token">
+            <column name="jwt_uuid" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="custom_claim_keys" type="text">
+                <constraints nullable="false" />
+            </column>
+            <column name="expiration_date" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <column name="issued_date" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            <column name="is_blacklisted" type="boolean" defaultValue="false" />
+            <column name="blacklisted_date" type="timestamp" />
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

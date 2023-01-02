@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>TARA Demo (Spring)</title>
+
+  <link rel="stylesheet" type="text/css" href="../static/css/style.css" th:href="@{css/style.css}"/>
+
+</head>
+<body>
+  <h1>TARA-Spring</h1>
+
+  <p><a href='https://e-gov.github.io/TARA-Doku/' target='_new'>Autentimisteenuse TARA</a> näidis-klientrakendus</p>
+
+  <p>Welcome, <span style='kood' th:text="${userInfo.fullName}"></span>!</p>
+	
+  <p>
+    Autenditi kasutaja:
+    <span class='kood' th:text="${userInfo.personalCode}"></span>
+    <span class='kood' th:text="${userInfo.firstName}"></span>
+    <span class='kood' th:text="${userInfo.lastName}"></span>
+  </p>
+  
+  <p>Lähtekood: <a href='https://github.com/e-gov/TARA-Java' target='_new'>https://github.com/e-gov/TARA-Spring</a></p>
+  <p>Küsimused koodi kohta: <a href="mailto:info@wemakesoftware.eu?subject=TARA-Spring%20rakendus">info&commat;wemakesoftware.eu</a></p>
+
+</body>
+</html>

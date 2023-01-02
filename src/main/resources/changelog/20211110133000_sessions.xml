@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd">
+
+    <changeSet id="20211110133000" author="Joonas Roosalu">
+        <createTable schemaName="pwa" tableName="sessions">
+            <column name="session_uuid" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="personal_code" type="text" />
+            <column name="valid_from" type="timestamp" />
+            <column name="valid_to" type="timestamp" />
+            <column name="given_name" type="text" />
+            <column name="surname" type="text" />
+            <column name="channel" type="text" />
+            <column name="ip" type="text" />
+            <column name="params" type="text" />
+            <column name="rights" type="text" />
+            <column name="roles" type="text" />
+            <column name="created" type="timestamp" />
+            <column name="last_modified" type="timestamp" />
+            <column name="username" type="text" />
+            <column name="browser" type="text" />
+            <column name="loginlevel" type="text" />
+            <column name="xtee_asutus" type="text" />
+            <column name="mobile_number" type="text" />
+            <column name="certificate_type" type="text" />
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
