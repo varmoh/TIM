@@ -1,0 +1,14 @@
+version: '3.9'
+services:
+  tim:
+    container_name: TIM
+    build:
+      context: .
+    ports:
+      - 8085:8085
+    networks:
+      - tim
+
+networks:
+  tim:
+    driver: bridge
