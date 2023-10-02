@@ -18,7 +18,7 @@ RUN ./mvnw install:install-file -Dfile=libs/id-log-${ID_LOG_VERSION}.jar -Dgroup
 RUN ./mvnw package
 
 # Tomcat installation stage
-FROM tomcat:latest
+FROM tomcat:9.0.62
 
 #COPY ./target /usr/local/tomcat/webapps/
 
