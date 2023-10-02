@@ -1,6 +1,6 @@
 # Build stage
 ARG tomcat_version=tomcat:9.0.62-jdk11-openjdk-slim
-FROM maven:3.8.4-openjdk-11 AS build
+FROM openjdk:11-jdk as build
 
 WORKDIR /workspace/app
 
