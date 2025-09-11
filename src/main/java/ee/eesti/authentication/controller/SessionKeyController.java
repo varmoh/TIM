@@ -31,18 +31,23 @@ public class SessionKeyController {
     @Value("${sessionkey.whitelist.period:30}")
     private Long sessionKeyTimeout;
 
+    public record SessionKeyRequest (String sessionKey, Long sessionLength) {};
+
     @PostMapping("/add")
-    public ResponseEntity<?> addSessionKey(@RequestBody String sessionKey, HttpServletResponse response) {
-        boolean success = allowList.addSessionToAllowlist(sessionKey, Timestamp.valueOf(now().plusMinutes(sessionKeyTimeout)));
+    public ResponseEntity<?> addSessionKey(@RequestBody SessionKeyRequest request, HttpServletResponse response) {
+        Long len = request.sessionLength != null ? request.sessionLength : sessionKeyTimeout;
+        String key = request.sessionKey;
+        boolean success = allowList.addSessionToAllowlist(key, Timestamp.valueOf(now().plusMinutes(len)));
+        log.debug("Added key '%s' for %d minutes.".formatted(key, len));
         if (!success) {
-            log.error("Failed to add session key '%s'".formatted(sessionKey));
+            log.error("Failed to add session key '%s' (%d minutes)".formatted(key, len));
         }
         return emptyOkResponse;
     }
 
     @PostMapping("/check")
-    public ResponseEntity<?> checkSessionKey(@RequestBody String sessionKey, HttpServletResponse response) {
-        if (allowList.checkWhitelisted(sessionKey))
+    public ResponseEntity<?> checkSessionKey(@RequestBody SessionKeyRequest request, HttpServletResponse response) {
+        if (allowList.checkWhitelisted(request.sessionKey))
             return emptyOkResponse;
         else
             return emptyNotFoundResponse;

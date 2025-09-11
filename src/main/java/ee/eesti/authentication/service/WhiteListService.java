@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -33,8 +34,8 @@ public class WhiteListService {
     }
 
     public boolean addSessionToAllowlist(String sessionHash, Timestamp expiredAt) {
-        JwtWhitelistEntity entity =
-                new JwtWhitelistEntity();
+        JwtWhitelistEntity entity = repository.findByJwtHash(sessionHash)
+                .orElse(new JwtWhitelistEntity());
         entity.setJwtHash(sessionHash);
         entity.setExpirationDate(expiredAt);
         entity = repository.saveAndFlush(entity);
@@ -44,15 +45,25 @@ public class WhiteListService {
 
     private void blacklist(String id) {
         UUID uuid = UUID.fromString(id);
-        JwtTokenInfo jwt = jwts.getReferenceById(uuid);
-        jwtService.blacklist(jwt);
-        CustomJwtTokenInfo cjwt = customJwts.getReferenceById(uuid);
-        jwtService.blacklist(cjwt);
+        try {
+            JwtTokenInfo jwt = jwts.getReferenceById(uuid);
+            jwtService.blacklist(jwt);
+        } catch(Exception ex) {}
+
+        try {
+            CustomJwtTokenInfo cjwt = customJwts.getReferenceById(uuid);
+            jwtService.blacklist(cjwt);
+        } catch (Exception ex) {}
     }
 
     @Scheduled(fixedDelayString = "${jwt.whitelist.period:30000}")
     public void scheduleBlacklisting() {
         List<JwtWhitelistEntity> whitelistEntities = repository.findByExpirationDateBefore(LocalDateTime.now());
+
+        log.debug("in whitelist:" +
+                whitelistEntities.stream().map(
+                        e -> "%s (%s)".formatted( e.getJwtHash(), e.getExpirationDate().toString())
+                ).collect(Collectors.joining(",")));
 
         whitelistEntities.forEach(
                 entity -> {
@@ -67,6 +78,10 @@ public class WhiteListService {
 
     public boolean checkWhitelisted(String id) {
         Optional<JwtWhitelistEntity> entity = repository.findByJwtHash(id);
+        if (entity.isPresent())
+            log.debug("Found %s".formatted(entity.get().getJwtHash()));
+        else
+            log.debug("ID %s not found".formatted(id));
         return entity.isPresent();
     }
 
