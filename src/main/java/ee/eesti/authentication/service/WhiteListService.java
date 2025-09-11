@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -49,18 +50,24 @@ public class WhiteListService {
         jwtService.blacklist(cjwt);
     }
 
-    @Scheduled(fixedDelayString = "${jwt.whitelist.period}")
+    @Scheduled(fixedDelayString = "${jwt.whitelist.period:30000}")
     public void scheduleBlacklisting() {
         List<JwtWhitelistEntity> whitelistEntities = repository.findByExpirationDateBefore(LocalDateTime.now());
 
         whitelistEntities.forEach(
                 entity -> {
                     blacklist(entity.getJwtHash());
+                    repository.delete(entity);
                     log.debug("Blacklisted {}", entity);
                 }
         );
 
         log.trace("JWT blacklisting update tick");
+    }
+
+    public boolean checkWhitelisted(String id) {
+        Optional<JwtWhitelistEntity> entity = repository.findByJwtHash(id);
+        return entity.isPresent();
     }
 
 }
