@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 import static java.time.LocalDateTime.now;
 import static org.apache.logging.log4j.message.ParameterizedMessage.deepToString;
 
-@CrossOrigin(originPatterns = "*", allowCredentials = "true")
+@CrossOrigin(originPatterns = "*")
 @RestController
 @RequestMapping("/sessionkey")
 @Slf4j
