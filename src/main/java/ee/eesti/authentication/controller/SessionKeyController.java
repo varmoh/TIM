@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import rig.commons.aop.Timed;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.time.LocalDateTime.now;
+import static org.apache.logging.log4j.message.ParameterizedMessage.deepToString;
 
 @CrossOrigin(originPatterns = "*", allowCredentials = "true")
 @RestController
@@ -51,5 +54,20 @@ public class SessionKeyController {
             return emptyOkResponse;
         else
             return emptyNotFoundResponse;
+    }
+
+    @PostMapping("/keys")
+    public ResponseEntity<?> checkSessionKeys(@RequestBody List<SessionKeyRequest> request) {
+        log.info("request=>" + deepToString(request));
+        try {
+            List<String> val = request.stream()
+                    .filter(key -> !allowList.checkWhitelisted(key.sessionKey))
+                    .map(key -> key.sessionKey)
+                    .toList();
+            return ResponseEntity.ok(val);
+        } catch (Exception ex) {
+            log.error("Failed to filter ID-s", ex);
+            throw ex;
+        }
     }
 }
