@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import rig.commons.aop.Timed;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,7 +59,7 @@ public class SessionKeyController {
 
     @PostMapping("/keys")
     public ResponseEntity<?> checkSessionKeys(@RequestBody List<SessionKeyRequest> request) {
-        log.info("request=>" + deepToString(request));
+        log.debug("request=>" + deepToString(request));
         try {
             List<String> val = request.stream()
                     .filter(key -> !allowList.checkWhitelisted(key.sessionKey))
@@ -70,4 +71,25 @@ public class SessionKeyController {
             throw ex;
         }
     }
+
+    @PostMapping("/keysString")
+    public ResponseEntity<?> checkSessionKeysString(@RequestBody String requestString) {
+
+        List<String> request = Arrays.stream(requestString.split(","))
+                        .map(String::trim)
+                                .collect(Collectors.toList());
+
+        log.debug("request=>" + deepToString(request));
+
+        try {
+            List<String> val = request.stream()
+                    .filter(key -> !allowList.checkWhitelisted(key))
+                    .toList();
+            return ResponseEntity.ok(val);
+        } catch (Exception ex) {
+            log.error("Failed to filter ID-s", ex);
+            throw ex;
+        }
+    }
+
 }
